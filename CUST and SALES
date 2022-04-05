@@ -1,0 +1,48 @@
+-- practice run to see what is in the tables
+SELECT * FROM BIT_DB_pjYTza.customers LIMIT 20; 
+SELECT * FROM BIT_DB_pjYTza.JanSales LIMIT 20;
+
+-- How many orders were placed in January?
+SELECT count(orderID) 
+FROM BIT_DB_pjYTza.JanSales;
+
+--How many of those orders were for an iPhone?
+SELECT count(Quantity) 
+FROM BIT_DB_pjYTza.JanSales 
+WHERE Product = 'iPhone';
+
+--select the customer account numbers for all the orders that were placed in february
+SELECT * FROM BIT_DB_pjYTza.customers;
+SELECT acctnum 
+FROM customers
+JOIN FebSales
+ON customers.order_id = FebSales.orderID; 
+
+-- Which product was the cheapest one sold in January, and what was the price?
+SELECT * FROM JanSales;
+SELECT distinct Product, Price 
+FROM JanSales 
+WHERE price in (SELECT min(price) 
+FROM JanSales);
+
+--What is the total rev for each product sold in jan? calc. using total number of products and price of prod.
+SELECT SUM(Quantity) * price 
+as revenue, product 
+FROM JanSales
+GROUP BY Product;
+
+-- which products were sold in feb at 548 lincoln St, Seattle, WA 98101 
+-- how many of each sol and total rev.
+SELECT * FROM FebSales; 
+SELECT sum(Quantity), product,
+sum(Quantity) * price as revenue 
+FROM FebSales
+WHERE location = '548 Lincoln St, Seattle, WA 98101'
+GROUP BY Product;
+
+--how many customers ordered more than 2 products at a time in feb and average amount for those cust.
+SELECT count(customers.acctnum), avg(quantity)*price
+FROM FebSales 
+LEFT JOIN customers
+ON customers.order_id = FebSales.orderID
+WHERE FebSales.Quantity > 2;
