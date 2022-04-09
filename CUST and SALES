@@ -46,3 +46,60 @@ FROM FebSales
 LEFT JOIN customers
 ON customers.order_id = FebSales.orderID
 WHERE FebSales.Quantity > 2;
+
+SELECT orderdate
+FROM FebSales
+WHERE orderdate between '02/13/19 00:00' AND '02/18/19 00:00';
+
+SELECT location
+FROM FebSales
+WHERE orderdate = '02/18/19 01:35';
+
+SELECT sum(quantity)
+FROM FebSales
+WHERE orderdate like '02/18/19%';
+
+SELECT distinct Product
+FROM FebSales
+WHERE Product like '%Batteries%';
+
+
+--list all the products sold in LA in Feb and include how many of each were sold
+SELECT Product, SUM(Quantity)
+FROM FebSales
+WHERE location like '%Los Angeles%'
+GROUP BY Product;
+
+--how many locations are there in NY that sold more than 1 product in Jan?
+SELECT count(distinct location)
+FROM JanSales
+WHERE location like '%NY%'
+AND Quantity > 1;
+
+-- how many of each type of headphone were sold in feb
+SELECT Product, SUM(Quantity)
+FROM FebSales
+WHERE Product like '%headphone%'
+GROUP BY Product; 
+
+--What was the average amount spent per account in feb?
+SELECt * FROM FebSales;
+SELECT SUM(quantity)*price/count(customers.acctnum)
+FROM FebSales 
+LEFT JOIN customers
+ON customers.order_id = FebSales.orderID;
+
+--What was the average quant of products purchased per account in feb
+SELECT SUM(Quantity)/count(customers.acctnum)
+FROM FebSales 
+LEFT JOIN customers
+ON customers.order_id = FebSales.orderID;
+
+--Which product brought in the most revenue in jan ad how much in total?
+SELECT * FROM JanSales;
+SELECT SUM(Quantity) * price 
+as revenue, product 
+FROM JanSales
+GROUP BY Product
+ORDER BY SUM(quantity*price) desc
+LIMIT 1;
